@@ -17,7 +17,7 @@ class RegistrationForm extends React.Component {
       if (!err) {
         console.log('Received values of form: ', values);
         
-        axios.get('/user', { params: values })
+        axios.get('/expenses/create', { params: values })
           .then(function (response) {
             console.log(response);
           })
@@ -45,7 +45,6 @@ class RegistrationForm extends React.Component {
         },
       },
     };
-    var myRequest = new Request('http://localhost/api', {method: 'POST', body: '{"foo":"bar"}'});
     return (
       <PanelBox title="新建流水">
         <Form onSubmit={this.handleSubmit}>
