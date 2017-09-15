@@ -3,35 +3,10 @@ import React from 'react';
 import { Form, Input, Tooltip, Icon, Select, Row, Col, Checkbox, Button } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
-
 import PanelBox from '../../../components/PanelBox';
-
-import './index.less'
-
-const residences = [{
-  value: 'zhejiang',
-  label: 'Zhejiang',
-  children: [{
-    value: 'hangzhou',
-    label: 'Hangzhou',
-    children: [{
-      value: 'xihu',
-      label: 'West Lake',
-    }],
-  }],
-}, {
-  value: 'jiangsu',
-  label: 'Jiangsu',
-  children: [{
-    value: 'nanjing',
-    label: 'Nanjing',
-    children: [{
-      value: 'zhonghuamen',
-      label: 'Zhong Hua Men',
-    }],
-  }],
-}];
-
+import {costType} from '@/common/constants.js'
+import './index.less';
+import axios from 'axios'
 class RegistrationForm extends React.Component {
   state = {
     confirmDirty: false,
@@ -41,27 +16,16 @@ class RegistrationForm extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        
+        axios.get('/user', { params: values })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       }
     });
-  }
-  handleConfirmBlur = (e) => {
-    const value = e.target.value;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
-  }
-  checkPassword = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value && value !== form.getFieldValue('password')) {
-      callback('Two passwords that you enter is inconsistent!');
-    } else {
-      callback();
-    }
-  }
-  checkConfirm = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value && this.state.confirmDirty) {
-      form.validateFields(['confirm'], { force: true });
-    }
-    callback();
   }
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -81,6 +45,7 @@ class RegistrationForm extends React.Component {
         },
       },
     };
+    var myRequest = new Request('http://localhost/api', {method: 'POST', body: '{"foo":"bar"}'});
     return (
       <PanelBox title="新建流水">
         <Form onSubmit={this.handleSubmit}>
@@ -94,7 +59,9 @@ class RegistrationForm extends React.Component {
                 required: true, message: 'Please input your E-mail!',
               }],
             })(
-              <Input />
+              <Select>
+                {costType.map((v, index)=>{return (<Option key={index} value={v.key}>{v.value}</Option>)})}
+              </Select>
             )}
           </FormItem>
           <FormItem
